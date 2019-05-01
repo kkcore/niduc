@@ -65,33 +65,26 @@ class Decoder:
     
     def decodeHamming(self, packet):
         reduntantbits = self.getReduntantbits(packet)
-        self.correctCode(packet,reduntantbits)
+        return self.correctCode(packet,reduntantbits)
 
     def correctCode(self, packet, reduntantbits):
+        #Do dodania kod podmieniajacy bity parzystosci, przynajmniej dla pierwszego nie dziala
         #To samo co w setParrityBitValues- redundacja, mozna zrefaktoryzowac
         helper = 0
         failedBit = 0
-        zeroiswrong = False
         for bit in reduntantbits:
             xor = 0
             for i in range(1, len(packet)+1):
                 if (i & (1<<(helper))):
                     if (packet[i-1] != helper):
                         xor^=int(packet[i-1])
-            if (xor != int(packet[bit])):
-                if bit == 0:
-                    zeroiswrong = True
                 failedBit+=bit
             helper+=1
-        # if (zeroiswrong):
-        #     if (int(packet[0]) == 0):
-        #         packet[0] = '1'
-        #     else:
-        #         packet[0] = '0'
         if (failedBit != 0):
             if (int(packet[failedBit]) == 0):
                 packet = packet[:failedBit] + '1' + packet[(failedBit+1): ]
             else:
                 packet[failedBit] = packet[:failedBit] + '0' + packet[(failedBit+1):]
+        return packet
 
 

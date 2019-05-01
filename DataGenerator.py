@@ -27,4 +27,22 @@ class DataGenerator:
         for i in signal:
             i[1] = struct.unpack('!f',struct.pack('!I', int(i[1], 2)))[0]
         return signal
+
+    def divideToPackets(self, signal, numberOfBits):
+        #Jeżeli wpisana liczba bitow jest dluzsza niz sygnal, to sygnal jest rowny dlugosci sygnalu
+        if (numberOfBits > len(signal)):
+            numberOfBits = len(signal)
+        allbits = ""
+        dividedPackets = []
+        dividedPackets.append("")
+        x = 0
+        for i in signal:
+            allbits += i[1]
+        for i in range(len(allbits)):
+            if (i != 0 and i%numberOfBits==0):
+                x += 1
+                dividedPackets.append("")
+            dividedPackets[x] += allbits[i]
+        return dividedPackets
+            
         
